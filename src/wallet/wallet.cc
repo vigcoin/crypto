@@ -2,14 +2,25 @@
 
 std::string Wallet::decrypt(Crypto::chacha8_iv iv, const std::string &password, const std::string &cipher)
 {
+  cout << "inside dec !" << endl;
+
   Crypto::chacha8_key key;
   Crypto::cn_context context;
   std::string plain;
+  cout << "before key !" << endl;
+
+  cout << "password = " << password << endl;
+  // cout << "context = " << (char *)context << endl;
+  // cout << "key = " << (char *)key << endl;
+
   Crypto::generate_chacha8_key(context, password, key);
+  cout << "after key !" << endl;
 
   plain.resize(cipher.size());
+  cout << "after resize !" << endl;
 
   Crypto::chacha8(cipher.data(), cipher.size(), key, iv, &plain[0]);
+  cout << "after dec !" << endl;
 
   return plain;
 }

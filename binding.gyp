@@ -10,7 +10,7 @@
             "src/crypto/hash-extra-jh.c",
             "src/crypto/hash-extra-skein.c",
             "src/crypto/slow-hash.c",
-            "src/crypto/cn-context.cpp",
+            "src/crypto/context.cpp",
             "src/crypto/crypto.cpp",
             "src/wallet/wallet.cc"
 
@@ -18,12 +18,14 @@
         "include_dirs": ["<!@(node -p \"require('node-addon-api').include\")"],
         "dependencies": ["<!(node -p \"require('node-addon-api').gyp\")"],
 
-        "cflags_cc!": ["-fno-exceptions", "-fno-rtti"],
+        "cflags_cc!": ["-fno-exceptions"],
+        "cflags": [
+            "-msse2",
+            "-maes"
+        ],
         "cflags_cc": [
-            "-std=c++0x",
             "-fexceptions",
-            "-frtti",
-            "-Wno-unused-private-field"
+            "-std=c++11"
         ],
         "xcode_settings": {
             "GCC_ENABLE_CPP_EXCEPTIONS": "YES",

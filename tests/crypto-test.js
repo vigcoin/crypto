@@ -1,8 +1,13 @@
 const assert = require("assert");
+const path = require("path");
+
+const wallet = require("@vigcoin/wallet");
+const {Reader} = wallet;
 
 const {
     echo,
-    enc
+    enc,
+    dec
 } = require('../');
 describe('crypto', () => {
     it('should hello', () => {
@@ -11,30 +16,21 @@ describe('crypto', () => {
         console.log(str);
     });
 
-    it('should enc', () => {
-        let str = 'str1';
-        let str1 = 'str2';
-        let asserted = false;
-
-        try {
-            let res = enc(str1, str, new Buffer.from("heelo"));
-            console.log(res);
-        } catch (e) {
-            console.log(e);
-            asserted = true;
-        }
-
-        assert(asserted);
-
-        try {
-            let res = enc(new Buffer.from("heeloosi"), str1, str);
-            console.log(res);
-        } catch (e) {
-            console.log(e);
-            asserted = true;
-        }
-
-
-
+    it('should dec', async () => {
+        const filename = path.resolve(__dirname, '../wallet/test.wallet');
+        const password = '';
+        const reader = new Reader(filename, password);
+        const read = await reader.read(filename, password);
+        console.log("after read");
+        console.log(read);
+        console.log("before destruct");
+        const {
+            buffer,
+            iv,
+            cipher
+        } = read;
+        // console.log(cipher)
+        const data = dec(iv, "", cipher.toString('binary'));
+        // console.log(data);
     });
 });
