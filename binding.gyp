@@ -5,6 +5,8 @@
             "src/crypto.cc",
             "src/crypto/hash.c",
             "src/crypto/chacha8.c",
+            "src/crypto/keccak.c",
+            "src/crypto/groestl.c",
             "src/crypto/hash-extra-blake.c",
             "src/crypto/hash-extra-groestl.c",
             "src/crypto/hash-extra-jh.c",
