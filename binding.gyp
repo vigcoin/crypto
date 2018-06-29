@@ -5,6 +5,7 @@
             "src/crypto.cc",
             "src/crypto/hash.c",
             "src/crypto/chacha8.c",
+            "src/crypto/blake256.c",
             "src/crypto/keccak.c",
             "src/crypto/groestl.c",
             "src/crypto/hash-extra-blake.c",
@@ -17,7 +18,7 @@
             "src/wallet/wallet.cc"
 
         ],
-        "include_dirs": ["<!@(node -p \"require('node-addon-api').include\")"],
+        "include_dirs": [".", "<!@(node -p \"require('node-addon-api').include\")"],
         "dependencies": ["<!(node -p \"require('node-addon-api').gyp\")"],
 
         "cflags_cc!": ["-fno-exceptions"],

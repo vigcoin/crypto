@@ -1,5 +1,7 @@
 #include <napi.h>
 #include "wallet/wallet.h"
+#include <sstream>
+#include <string>
 
 using namespace Napi;
 
@@ -35,10 +37,9 @@ Napi::Value checkParam(const Napi::Env env, const Napi::CallbackInfo &info)
     return env.Null();
   }
 
-      cout << "get info 4" << endl;
+  cout << "get info 4" << endl;
 
-
-  if (!info[2].IsString())
+  if (!info[2].IsBuffer())
   {
     Napi::TypeError::New(env, "Wrong arguments 3: String required!").ThrowAsJavaScriptException();
     return env.Null();
@@ -77,6 +78,7 @@ Napi::Value enc(const Napi::CallbackInfo &info)
 
 Napi::Value decrypt(const Napi::CallbackInfo &info)
 {
+  cout << "inside decrypt" << endl;
   const Napi::Env env = info.Env();
   if (checkParam(env, info) == env.Null())
   {
@@ -85,16 +87,44 @@ Napi::Value decrypt(const Napi::CallbackInfo &info)
 
   Buffer<uint8_t> ivIn = info[0].As<Buffer<uint8_t>>();
 
-  std::string password = info[1].As<String>();
-  std::string cipher = info[2].As<String>();
-
   uint8_t *pIv = ivIn.Data();
   chacha8_iv iv;
   memcpy(&iv, pIv, sizeof(iv));
   cout << "copied !" << endl;
-  std::string plain = Wallet::decrypt(iv, password, cipher);
 
-  return Napi::String::New(env, plain);
+  for (size_t i = 0; i < ivIn.Length(); i++)
+  {
+    cout << (char)pIv[i] << endl;
+  }
+
+  std::string password = info[1].As<String>().Utf8Value();
+  cout << "password: " << password << endl;
+
+  Buffer<uint8_t> cipherBuffer = info[2].As<Buffer<uint8_t>>();
+
+  cout << "cipher buffer size: " << cipherBuffer.Length() << endl;
+
+  uint8_t *pCipher = cipherBuffer.Data();
+  size_t cipherSize = cipherBuffer.Length();
+
+  std::ostringstream convert;
+  for (size_t a = 0; a < cipherSize; a++)
+  {
+    convert << (uint8_t)pCipher[a];
+  }
+
+  std::string cipher = convert.str();
+
+  // std::cout << key_string << std::endl;
+
+  // std::string cipher = Napi::String::New(env, (const char *)pCipher);
+
+  // cout << cipher << endl;
+  cout << "ciper size: " << cipher.size() << endl;
+  std::string plain = Wallet::decrypt(iv, password, cipher);
+  cout << "plain size: " << plain.size() << endl;
+
+  return Napi::Buffer<uint8_t>::New(env, (uint8_t *)plain.data(), plain.length());
 }
 
 Napi::Value echo(const Napi::CallbackInfo &info)

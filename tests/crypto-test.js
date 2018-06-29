@@ -10,10 +10,16 @@ const {
     dec
 } = require('../');
 describe('crypto', () => {
-    it('should hello', () => {
-        let str = 'Hello world!';
-        assert(str === echo(str));
-        console.log(str);
+    it('should dec', () => {
+        let iv = new Buffer(8);
+        iv[0] = 'i'.charCodeAt(0);
+        iv[1] = 'v'.charCodeAt(0);
+
+        const password = "password 1";
+        const cipher = new Buffer("cipher xxx 2");
+
+        const data = dec(iv, password, cipher);
+
     });
 
     it('should dec', async () => {
@@ -29,8 +35,9 @@ describe('crypto', () => {
             iv,
             cipher
         } = read;
-        // console.log(cipher)
-        const data = dec(iv, "", cipher.toString('binary'));
-        // console.log(data);
+        console.log(cipher.length, " ciper");
+        const data = dec(iv, "", cipher);
+        console.log("buffer size");
+        console.log(data.length);
     });
 });
