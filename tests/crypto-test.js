@@ -7,7 +7,8 @@ const {Reader} = wallet;
 const {
     echo,
     enc,
-    dec
+    dec,
+    Address
 } = require('../');
 describe('crypto', () => {
     it('should dec', () => {
@@ -36,8 +37,11 @@ describe('crypto', () => {
             cipher
         } = read;
         console.log(cipher.length, " ciper");
-        const data = dec(iv, "", cipher);
+        const plain = dec(iv, "", cipher);
         console.log("buffer size");
-        console.log(data.length);
+        console.log(plain);
+        console.log(plain.length);
+        // const bufferNew = Buffer(plain.length);
+        const add = new Address(plain);
     });
 });

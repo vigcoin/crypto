@@ -122,9 +122,31 @@ Napi::Value decrypt(const Napi::CallbackInfo &info)
   // cout << cipher << endl;
   cout << "ciper size: " << cipher.size() << endl;
   std::string plain = Wallet::decrypt(iv, password, cipher);
+  // cout << "plain: " << plain << endl;
   cout << "plain size: " << plain.size() << endl;
 
-  return Napi::Buffer<uint8_t>::New(env, (uint8_t *)plain.data(), plain.length());
+  std::ostringstream oss;
+
+  const uint8_t *data =  (uint8_t *)plain.data();
+
+  // for(size_t i = 0; i < plain.length(); i++) {
+  //   uint8_t top = (data[i] >> 4) & 0xF;
+  //   uint8_t bottom = data[i] & 0xF;
+  //   oss << bottom ;
+  //   oss << top ;
+  //   // cout << std::hex << bottom << endl;
+  //   // cout << std::hex << top << endl;
+  // }
+
+  // cout << oss.str().length() << endl;
+  size_t length = plain.size();
+  // cout << data << endl;
+  cout << length << endl;
+
+  uint8_t *des = new uint8_t[length];
+  memcpy(des, data, length);
+
+  return Napi::Buffer<uint8_t>::New(env, des, length);
 }
 
 Napi::Value echo(const Napi::CallbackInfo &info)
