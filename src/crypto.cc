@@ -14,14 +14,11 @@ Napi::Value checkParam(const Napi::Env env, const Napi::CallbackInfo &info)
     return env.Null();
   }
 
-  cout << "get info 1" << endl;
-
   if (!info[0].IsBuffer())
   {
     Napi::TypeError::New(env, "Wrong arguments 1: Buffer required!").ThrowAsJavaScriptException();
     return env.Null();
   }
-  cout << "get info 2" << endl;
 
   Buffer<uint8_t> ivIn = info[0].As<Buffer<uint8_t>>();
   if (ivIn.Length() != 8)
@@ -29,15 +26,12 @@ Napi::Value checkParam(const Napi::Env env, const Napi::CallbackInfo &info)
     Error::New(info.Env(), "Incorrect buffer length.").ThrowAsJavaScriptException();
     return env.Null();
   }
-  cout << "get info 3" << endl;
 
   if (!info[1].IsString())
   {
     Napi::TypeError::New(env, "Wrong arguments 2: String required!").ThrowAsJavaScriptException();
     return env.Null();
   }
-
-  cout << "get info 4" << endl;
 
   if (!info[2].IsBuffer())
   {
@@ -127,20 +121,8 @@ Napi::Value decrypt(const Napi::CallbackInfo &info)
 
   std::ostringstream oss;
 
-  const uint8_t *data =  (uint8_t *)plain.data();
-
-  // for(size_t i = 0; i < plain.length(); i++) {
-  //   uint8_t top = (data[i] >> 4) & 0xF;
-  //   uint8_t bottom = data[i] & 0xF;
-  //   oss << bottom ;
-  //   oss << top ;
-  //   // cout << std::hex << bottom << endl;
-  //   // cout << std::hex << top << endl;
-  // }
-
-  // cout << oss.str().length() << endl;
+  const uint8_t *data = (uint8_t *)plain.data();
   size_t length = plain.size();
-  // cout << data << endl;
   cout << length << endl;
 
   uint8_t *des = new uint8_t[length];
@@ -166,6 +148,58 @@ Napi::Value echo(const Napi::CallbackInfo &info)
   return Napi::String::New(env, info[0].As<Napi::String>().Utf8Value());
 }
 
+Napi::Value verify(const Napi::CallbackInfo &info)
+{
+  const Napi::Env env = info.Env();
+
+  if (info.Length() != 2)
+  {
+    Napi::TypeError::New(env, "Wrong number of arguments").ThrowAsJavaScriptException();
+    return env.Null();
+  }
+
+  if (!info[0].IsBuffer())
+  {
+    Napi::TypeError::New(env, "Wrong arguments 1: Buffer required!").ThrowAsJavaScriptException();
+    return env.Null();
+  }
+
+  Buffer<uint8_t> secretKey = info[0].As<Buffer<uint8_t>>();
+  if (secretKey.Length() != 32)
+  {
+    Error::New(info.Env(), "Incorrect buffer length.").ThrowAsJavaScriptException();
+    return env.Null();
+  }
+
+  if (!info[1].IsBuffer())
+  {
+    Napi::TypeError::New(env, "Wrong arguments 1: Buffer required!").ThrowAsJavaScriptException();
+    return env.Null();
+  }
+
+  Buffer<uint8_t> publicKey = info[1].As<Buffer<uint8_t>>();
+  if (publicKey.Length() != 32)
+  {
+    Error::New(info.Env(), "Incorrect buffer length.").ThrowAsJavaScriptException();
+    return env.Null();
+  }
+
+  SecretKey secret;
+  PublicKey pub;
+
+  const uint8_t *pSecretKey = secretKey.Data();
+  const uint8_t *pPublicKey = publicKey.Data();
+
+
+  memcpy(&secret, pSecretKey, sizeof(SecretKey));
+  memcpy(&pub, pPublicKey, sizeof(PublicKey));
+  cout << "copied !" << endl;
+
+  bool res = Wallet::verify_key(secret, pub);
+
+  return Napi::Boolean::New(env, res);
+}
+
 Napi::Object Init(Napi::Env env, Napi::Object exports)
 {
   exports.Set(Napi::String::New(env, "echo"),
@@ -176,6 +210,9 @@ Napi::Object Init(Napi::Env env, Napi::Object exports)
 
   exports.Set(Napi::String::New(env, "dec"),
               Napi::Function::New(env, decrypt));
+
+  exports.Set(Napi::String::New(env, "verify"),
+              Napi::Function::New(env, verify));
   return exports;
 }
 

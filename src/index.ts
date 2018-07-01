@@ -1,8 +1,10 @@
 const sh = require('bindings')('crypto.node')
+const assert = require("assert");
 
 export const echo = sh.echo;
 export const enc = sh.enc;
 export const dec = sh.dec;
+export const verify = sh.verify;
 
 export interface KeyPair {
   public: Uint8Array;
@@ -11,11 +13,12 @@ export interface KeyPair {
 
 export class Key {
   keyPair: KeyPair;
-  constructor(keyPair:KeyPair) {
+  constructor(keyPair: KeyPair) {
     this.keyPair = keyPair;
+    assert(this.verify(this.keyPair.private, this.keyPair.public));
   }
-  verify() {
-
+  verify(secretKey: Uint8Array, publicKey: Uint8Array) {
+    return verify(secretKey, publicKey);
   }
 }
 
@@ -24,8 +27,8 @@ export class Address {
 
   createdTime: number;
 
-  sendKeys: KeyPair;
-  viewKeys: KeyPair;
+  sendKeys: Key;
+  viewKeys: Key;
 
 
   constructor(data: Buffer, Base85Prefix: number) {
@@ -57,7 +60,7 @@ export class Address {
     return vint;
   }
 
-  parseAddress(buffer:Buffer, offset: number) {
+  parseAddress(buffer: Buffer, offset: number) {
     const size = 32;
     const address = new Buffer(32);
     buffer.copy(address, 0, offset, offset + size);
@@ -76,7 +79,7 @@ export class Address {
     offset += spendPublic.bytes;
     const spendPrivate = this.parseAddress(this.data, time.bytes + spendPublic.bytes);
 
-    this.sendKeys = {public: spendPublic.value, private: spendPrivate.value};
+    this.sendKeys = new Key({ public: spendPublic.value, private: spendPrivate.value });
 
     offset += spendPrivate.bytes;
     const viewPublic = this.parseAddress(this.data, offset);
@@ -85,7 +88,12 @@ export class Address {
     offset += viewPublic.bytes;
     const viewPrivate = this.parseAddress(this.data, offset);
 
-    this.viewKeys = {public: viewPublic.value, private: viewPrivate.value};
+    this.viewKeys = new Key({ public: viewPublic.value, private: viewPrivate.value });
+
+    console.log(this.sendKeys);
+
+    // this.sendKeyPair = new Key(this.sendKeys);
+    // this.viewKeysPair = new Key(this.viewKeys);
   }
 
 }
