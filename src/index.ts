@@ -1,6 +1,3 @@
-import { CLIENT_RENEG_LIMIT } from "tls";
-import { Key } from "readline";
-
 const sh = require('bindings')('crypto.node')
 
 export const echo = sh.echo;
@@ -11,6 +8,16 @@ export interface KeyPair {
   public: Uint8Array;
   private: Uint8Array;
 };
+
+export class Key {
+  keyPair: KeyPair;
+  constructor(keyPair:KeyPair) {
+    this.keyPair = keyPair;
+  }
+  verify() {
+
+  }
+}
 
 export class Address {
   data: Buffer;
@@ -53,7 +60,6 @@ export class Address {
   parseAddress(buffer:Buffer, offset: number) {
     const size = 32;
     const address = new Buffer(32);
-    console.log(address);
     buffer.copy(address, 0, offset, offset + size);
     return {
       value: address,
@@ -64,29 +70,22 @@ export class Address {
   parse() {
     let offset = 0;
     const time = this.parseCreateTime(0);
-    console.log(time);
-    console.log(this.data);
     offset += time.bytes;
     const spendPublic = this.parseAddress(this.data, time.bytes);
 
-    this.sendKeys.public = spendPublic.value;
-    console.log(spendPublic);
-
     offset += spendPublic.bytes;
     const spendPrivate = this.parseAddress(this.data, time.bytes + spendPublic.bytes);
-    this.sendKeys.private = spendPrivate.value;
 
-    console.log(spendPrivate);
+    this.sendKeys = {public: spendPublic.value, private: spendPrivate.value};
+
     offset += spendPrivate.bytes;
     const viewPublic = this.parseAddress(this.data, offset);
-    console.log(viewPublic); 
-    this.viewKeys.public = viewPublic.value;
 
 
     offset += viewPublic.bytes;
     const viewPrivate = this.parseAddress(this.data, offset);
-    console.log(viewPrivate); 
-    this.viewKeys.private = viewPrivate.value;
+
+    this.viewKeys = {public: viewPublic.value, private: viewPrivate.value};
   }
 
 }
