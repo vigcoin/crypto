@@ -9,10 +9,10 @@ deploy:
   email: calidion@gmail.com
 
 env:
-  - CXX=g++-5.4
+  - CXX=g++-4.8
 addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - g++-5.4
+      - g++-4.8
