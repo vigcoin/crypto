@@ -1,13 +1,13 @@
 const sh = require('bindings')('crypto.node')
 const assert = require("assert");
 
-export {Reader} from "./reader";
+export { Reader } from "./reader";
 
 export const echo = sh.echo;
 export const enc = sh.enc;
 export const dec = sh.dec;
 export const verify = sh.verify;
-// export const address = sh.address;
+export const to_address = sh.to_address;
 
 export interface KeyPair {
   public: Uint8Array;
@@ -33,13 +33,13 @@ export class Address {
   sendKeys: Key;
   viewKeys: Key;
 
-  // base58Prefix: number;
+  base58Prefix: number;
 
-  // public address: string;
+  public address: string;
 
-  constructor(data: Buffer) {
+  constructor(data: Buffer, base58Prefix: number) {
     this.data = data;
-    // this.base58Prefix = base58Prefix;
+    this.base58Prefix = base58Prefix;
     this.parse();
   }
 
@@ -96,12 +96,27 @@ export class Address {
     const viewPrivate = this.parseAddress(this.data, offset);
 
     this.viewKeys = new Key({ public: viewPublic.value, private: viewPrivate.value });
+    if (this.base58Prefix) {
+      let key = Buffer.concat([spendPublic.value, viewPublic.value]);
+      this.address = this.getAddress(this.base58Prefix, key);
+    }
   }
 
-  public getAddress(base58Prefix: number) {
-    return "";
+  public getAddress(base58Prefix?: number, key?: Buffer) {
+    if (!base58Prefix && !key) {
+      return this.address;
+    }
+    if (base58Prefix && key) {
+      const buffer = new Buffer(8);
+
+      buffer.fill(0);
+
+      buffer.writeUInt32LE(base58Prefix, 0);
+      buffer.writeUInt32LE(base58Prefix >> 8, 4);
+      return to_address(buffer, key);
+    }
   }
 
-  
+
 
 }

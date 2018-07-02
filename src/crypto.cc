@@ -1,12 +1,12 @@
 #include <napi.h>
-#include "wallet/wallet.h"
 #include <sstream>
 #include <string>
+#include "wallet/wallet.h"
+#include "cryptonote/common/base58.h"
 
 using namespace Napi;
 
 using namespace CryptoNote;
-
 
 Napi::Value checkParam(const Napi::Env env, const Napi::CallbackInfo &info)
 {
@@ -175,67 +175,56 @@ Napi::Value verify(const Napi::CallbackInfo &info)
   return Napi::Boolean::New(env, res);
 }
 
-// Napi::Value address(const Napi::CallbackInfo &info)
-// {
-//   const Napi::Env env = info.Env();
+Napi::Value to_address(const Napi::CallbackInfo &info)
+{
+  const Napi::Env env = info.Env();
 
-//   if (info.Length() != 3)
-//   {
-//     Napi::TypeError::New(env, "Wrong number of arguments").ThrowAsJavaScriptException();
-//     return env.Null();
-//   }
+  if (info.Length() != 2)
+  {
+    Napi::TypeError::New(env, "Wrong number of arguments").ThrowAsJavaScriptException();
+    return env.Null();
+  }
 
-//   if (!info[0].IsBuffer())
-//   {
-//     Napi::TypeError::New(env, "Wrong arguments 1: Buffer required!").ThrowAsJavaScriptException();
-//     return env.Null();
-//   }
+  if (!info[0].IsBuffer())
+  {
+    Napi::TypeError::New(env, "Wrong arguments 1: Buffer required!").ThrowAsJavaScriptException();
+    return env.Null();
+  }
 
-//   Buffer<uint8_t> sendKey = info[0].As<Buffer<uint8_t>>();
-//   if (sendKey.Length() != 32)
-//   {
-//     Error::New(info.Env(), "Incorrect buffer length.").ThrowAsJavaScriptException();
-//     return env.Null();
-//   }
+  Buffer<uint8_t> base58Prefix = info[0].As<Buffer<uint8_t>>();
+  if (base58Prefix.Length() != 8)
+  {
+    Error::New(info.Env(), "Incorrect buffer length.").ThrowAsJavaScriptException();
+    return env.Null();
+  }
 
-//   if (!info[1].IsBuffer())
-//   {
-//     Napi::TypeError::New(env, "Wrong arguments 1: Buffer required!").ThrowAsJavaScriptException();
-//     return env.Null();
-//   }
+  if (!info[1].IsBuffer())
+  {
+    Napi::TypeError::New(env, "Wrong arguments 1: Buffer required!").ThrowAsJavaScriptException();
+    return env.Null();
+  }
 
-//   Buffer<uint8_t> viewKey = info[1].As<Buffer<uint8_t>>();
-//   if (viewKey.Length() != 32)
-//   {
-//     Error::New(info.Env(), "Incorrect buffer length.").ThrowAsJavaScriptException();
-//     return env.Null();
-//   }
+  Buffer<uint8_t> key = info[1].As<Buffer<uint8_t>>();
+  if (key.Length() != 64)
+  {
+    Error::New(info.Env(), "Incorrect buffer length.").ThrowAsJavaScriptException();
+    return env.Null();
+  }
 
-//   if (!info[2].IsNumber())
-//   {
-//     Napi::TypeError::New(env, "Wrong arguments 1: Uint64 required!").ThrowAsJavaScriptException();
-//     return env.Null();
-//   }
+  const uint8_t *pKey = key.Data();
+  const uint8_t *pPrefix = base58Prefix.Data();
 
-//   PublicKey send;
-//   PublicKey view;
+  uint64_t prefix58;
 
-//   const uint8_t *pSend = sendKey.Data();
-//   const uint8_t *pView = viewKey.Data();
+  char keyStore[sizeof(PublicKey) * 2];
 
-//   memcpy(&send, pSend, sizeof(PublicKey));
-//   memcpy(&view, pView, sizeof(PublicKey));
+  memcpy(keyStore, pKey, sizeof(PublicKey) * 2);
+  memcpy(&prefix58, pPrefix, 8);
 
-//   AccountPublicAddress address;
-//   address.spendPublicKey = send;
-//   address.viewPublicKey = view;
+  std::string addressStr = Tools::Base58::encode_addr(prefix58, std::string(keyStore, sizeof(PublicKey) * 2));
 
-//   uint64_t prefix58 = info[2].As<Number>().Int64Value();
-
-//   std::string addressStr = Wallet::get_address(prefix58, address);
-
-//   return Napi::String::New(env, addressStr);
-// }
+  return Napi::String::New(env, addressStr);
+}
 
 Napi::Object Init(Napi::Env env, Napi::Object exports)
 {
@@ -250,6 +239,9 @@ Napi::Object Init(Napi::Env env, Napi::Object exports)
 
   exports.Set(Napi::String::New(env, "verify"),
               Napi::Function::New(env, verify));
+  exports.Set(Napi::String::New(env, "to_address"),
+              Napi::Function::New(env, to_address));
+
   return exports;
 }
 
