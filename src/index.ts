@@ -111,8 +111,8 @@ export class Address {
 
       buffer.fill(0);
 
-      buffer.writeUInt32LE(base58Prefix, 0);
-      buffer.writeUInt32LE(base58Prefix >> 8, 4);
+      buffer.writeUInt32LE(base58Prefix & 0xFFFFFFFF, 0);
+      buffer.writeUInt32LE(0, 4);
       return to_address(buffer, key);
     }
   }
