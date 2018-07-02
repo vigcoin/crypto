@@ -27,7 +27,7 @@ std::string Wallet::encrypt(Crypto::chacha8_iv iv, const std::string &password, 
   return cipher;
 }
 
-bool Wallet::verify_key(const SecretKey& sec, const PublicKey& expected_pub)
+bool Wallet::verify_key(const SecretKey &sec, const PublicKey &expected_pub)
 {
   PublicKey pub;
   bool r = Crypto::secret_key_to_public_key(sec, pub);

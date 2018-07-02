@@ -1,10 +1,13 @@
 const sh = require('bindings')('crypto.node')
 const assert = require("assert");
 
+export {Reader} from "./reader";
+
 export const echo = sh.echo;
 export const enc = sh.enc;
 export const dec = sh.dec;
 export const verify = sh.verify;
+// export const address = sh.address;
 
 export interface KeyPair {
   public: Uint8Array;
@@ -30,9 +33,13 @@ export class Address {
   sendKeys: Key;
   viewKeys: Key;
 
+  // base58Prefix: number;
 
-  constructor(data: Buffer, Base85Prefix: number) {
+  // public address: string;
+
+  constructor(data: Buffer) {
     this.data = data;
+    // this.base58Prefix = base58Prefix;
     this.parse();
   }
 
@@ -89,11 +96,12 @@ export class Address {
     const viewPrivate = this.parseAddress(this.data, offset);
 
     this.viewKeys = new Key({ public: viewPublic.value, private: viewPrivate.value });
-
-    console.log(this.sendKeys);
-
-    // this.sendKeyPair = new Key(this.sendKeys);
-    // this.viewKeysPair = new Key(this.viewKeys);
   }
+
+  public getAddress(base58Prefix: number) {
+    return "";
+  }
+
+  
 
 }

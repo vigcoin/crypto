@@ -4,9 +4,12 @@
 #include "../cryptonote/crypto/hash.h"
 #include "../cryptonote/crypto/chacha8.h"
 #include "../cryptonote/crypto/crypto.h"
+#include "../cryptonote/include/CryptoNote.h"
 
 using namespace std;
 using namespace Crypto;
+
+using namespace CryptoNote;
 
 extern "C"
 {

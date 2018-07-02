@@ -1,14 +1,15 @@
 const assert = require("assert");
 const path = require("path");
 
-const wallet = require("@vigcoin/wallet");
-const {Reader} = wallet;
+// const wallet = require("@vigcoin/wallet");
+// const {Reader} = wallet;
 
 const {
     echo,
     enc,
     dec,
-    Address
+    Address,
+    Reader
 } = require('../');
 describe('crypto', () => {
     it('should dec', () => {
@@ -28,20 +29,21 @@ describe('crypto', () => {
         const password = '';
         const reader = new Reader(filename, password);
         const read = await reader.read(filename, password);
-        console.log("after read");
-        console.log(read);
-        console.log("before destruct");
+        // console.log("after read");
+        // console.log(read);
+        // console.log("before destruct");
         const {
             buffer,
             iv,
             cipher
         } = read;
-        console.log(cipher.length, " ciper");
+        // console.log(cipher.length, " ciper");
         const plain = dec(iv, "", cipher);
-        console.log("buffer size");
-        console.log(plain);
-        console.log(plain.length);
+        // console.log("buffer size");
+        // console.log(plain);
+        // console.log(plain.length);
         // const bufferNew = Buffer(plain.length);
-        const add = new Address(plain);
+        const add = new Address(plain, 0x3d);
+        console.log(add.getAddress());
     });
 });
