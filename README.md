@@ -1,6 +1,9 @@
 @vig/crypto
 =====================
 
+![](https://travis-ci.org/vigcoin/crypto.svg?branch=master)
+
+
 basic cryptonote functions.
 will include apis for:
 
