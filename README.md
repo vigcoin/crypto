@@ -1,7 +1,7 @@
 @vig/crypto
 =====================
 
-![](https://travis-ci.org/vigcoin/crypto.svg?branch=master)
+[![](https://travis-ci.org/vigcoin/crypto.svg?branch=master)](https://travis-ci.org/vigcoin/crypto)
 
 
 basic cryptonote functions.
