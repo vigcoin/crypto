@@ -10,11 +10,11 @@ deploy:
 
 dist: xenial
 env:
-  - CXX=g++-5.3
+  - CXX=g++
 addons:
   apt:
-    sources:
-      - ubuntu-toolchain-r-test
     packages:
-      - g++-5.3
+      - build-essential
+      - g++
+      - make
       - libboost1.55-all-dev
