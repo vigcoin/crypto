@@ -4,7 +4,7 @@
 
 #pragma once
 
-#if !defined(__cplusplus)
+#ifndef __cplusplus
 
 #include <assert.h>
 #include <stdbool.h>
