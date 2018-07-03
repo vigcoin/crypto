@@ -7,12 +7,14 @@ node_js:
 deploy:
   provider: npm
   email: calidion@gmail.com
+
+dist: xenial
 env:
-  - CXX=g++-5 CFLAGS=--std=c11
+  - CXX=g++-5.3
 addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - g++-5
+      - g++-5.3
       - libboost1.55-all-dev
