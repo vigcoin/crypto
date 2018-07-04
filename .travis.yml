@@ -10,11 +10,11 @@ deploy:
 
 dist: xenial
 env:
-  - CXX=g++
+  - CXX=g++-6
 addons:
   apt:
     packages:
       - build-essential
-      - g++
+      - g++-6
       - make
       - libboost1.55-all-dev
