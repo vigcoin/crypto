@@ -1,6 +1,7 @@
 const sh = require('bindings')('crypto.node')
 const assert = require("assert");
-
+import { Reader } from "./reader";
+import { FILE } from "dns";
 export { Reader } from "./reader";
 
 export const echo = sh.echo;
@@ -116,7 +117,36 @@ export class Address {
       return to_address(buffer, key);
     }
   }
+}
 
+export class Wallet {
+  prefix: number;
+  reader: Reader;
+  _address: Address;
+  filename: string;
+  password: string;
 
+  public address: string;
 
+  constructor(filename: string, password: string, prefix: number = 0x3d) {
+    this.reader = new Reader(filename, password);
+    this.prefix = prefix;
+    this.filename = filename;
+    this.password = password;
+  }
+
+  async read() {
+    const read = await this.reader.read(this.filename, this.password);
+    const {
+      iv,
+      cipher
+    } = read;
+    const plain = dec(iv, this.password, cipher);
+    this._address = new Address(plain, this.prefix);
+    this.address = this._address.address;
+  }
+
+  getAddress(): string {
+    return this.address;
+  }
 }

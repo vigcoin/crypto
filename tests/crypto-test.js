@@ -6,8 +6,10 @@ const {
     enc,
     dec,
     Address,
-    Reader
+    Reader,
+    Wallet
 } = require('../');
+
 describe('crypto', () => {
     it('should dec', () => {
         let iv = new Buffer(8);
@@ -27,12 +29,23 @@ describe('crypto', () => {
         const reader = new Reader(filename, password);
         const read = await reader.read(filename, password);
         const {
-            buffer,
             iv,
             cipher
         } = read;
         const plain = dec(iv, "", cipher);
         const add = new Address(plain, 0x3d);
         assert(add.address === "BKC4AgG14PnQyfpEeEQSNSYjhBo5237Yf1pScL4c9rQ4LQTngRWHeEuJcSmW8cc6AjA3vgGSLR3odRtphDGnQAVHEuJN8p9");
+    });
+
+    it('should Wallet', async () => {
+
+        const filename = path.resolve(__dirname, '../wallet/test.wallet');
+        const password = '';
+
+        const wallet = new Wallet(filename, password);
+
+        await wallet.read();
+
+        assert(wallet.getAddress() === "BKC4AgG14PnQyfpEeEQSNSYjhBo5237Yf1pScL4c9rQ4LQTngRWHeEuJcSmW8cc6AjA3vgGSLR3odRtphDGnQAVHEuJN8p9");
     });
 });

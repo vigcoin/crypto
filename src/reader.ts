@@ -75,7 +75,7 @@ export class Reader {
     return { value: cipher, bytes: cipherInt.bytes + cipherInt.value };
   }
 
-  public async read(filename: string, password: string) {
+  public async read(filename: string = this.filename, password: string = this.password) {
     const stream = fs.createReadStream(filename);
 
     // Should Not Set Encoding! which will convert stream to string
