@@ -1,5 +1,6 @@
 language: node_js
 sudo: required
+dist: xenial
 node_js:
 - '10'
 - '8'
@@ -8,15 +9,5 @@ node_js:
 deploy:
   provider: npm
   email: calidion@gmail.com
-dist: trusty
-services:
-  - docker
-before_install:
-  - docker pull ubuntu:16.04
-addons:
-  apt:
-    packages:
-      - build-essential
-      - g++-6
-      - make
-      - libboost1.55-all-dev
+install:
+  - sudo apt-get install -y libboost-all-dev
