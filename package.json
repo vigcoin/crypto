@@ -34,6 +34,7 @@
     "devDependencies": {
         "@types/node": "^10.1.0",
         "@vigcoin/wallet": "0.0.2",
-        "mocha": "^5.1.0"
+        "mocha": "^5.1.0",
+        "typescript": "^2.9.2"
     }
 }
