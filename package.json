@@ -16,7 +16,7 @@
     "scripts": {
         "pretest": "./node_modules/typescript/bin/tsc --pretty",
         "prebuild": "npm run clean && npm run format && npm run lint && echo Using TypeScript && tsc --version",
-        "test": "./node_modules/.bin/mocha ./tests/**/*-test.js"
+        "test": "jest"
     },
     "repository": {
         "type": "git",
@@ -32,9 +32,23 @@
         "hash"
     ],
     "devDependencies": {
+        "@types/jest": "^23.1.6",
         "@types/node": "^10.1.0",
         "@vigcoin/wallet": "0.0.2",
+        "jest": "^23.4.1",
         "mocha": "^5.1.0",
+        "ts-jest": "^23.0.0",
         "typescript": "^2.9.2"
+    },
+    "jest": {
+        "transform": {
+            ".(ts)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+        },
+        "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|js)$",
+        "moduleFileExtensions": [
+            "ts",
+            "js"
+        ],
+        "testEnvironment": "node"
     }
 }
