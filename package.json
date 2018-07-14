@@ -14,7 +14,7 @@
     "main": "lib/index.js",
     "typings": "lib/index.d.ts",
     "scripts": {
-        "pretest": "tsc --pretty",
+        "pretest": "./node_modules/typescript/bin/tsc --pretty",
         "prebuild": "npm run clean && npm run format && npm run lint && echo Using TypeScript && tsc --version",
         "test": "./node_modules/.bin/mocha ./tests/**/*-test.js"
     },

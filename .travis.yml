@@ -11,4 +11,3 @@ deploy:
   email: calidion@gmail.com
 install:
   - sudo apt-get install -y libboost-all-dev
-  - npm install typescript -g
