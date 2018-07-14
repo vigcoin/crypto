@@ -7,7 +7,7 @@ node_js:
 - '6'
 - '4'
 deploy:
-  provider: npm
   email: calidion@gmail.com
 install:
   - sudo apt-get install -y libboost-all-dev
+  - npm install --no-optional
