@@ -5,6 +5,7 @@ const {
     echo,
     enc,
     dec,
+    Key,
     Address,
     Reader,
     Wallet
@@ -47,5 +48,9 @@ describe('crypto', () => {
         await wallet.read();
 
         assert(wallet.getAddress() === "BKC4AgG14PnQyfpEeEQSNSYjhBo5237Yf1pScL4c9rQ4LQTngRWHeEuJcSmW8cc6AjA3vgGSLR3odRtphDGnQAVHEuJN8p9");
+    });
+
+    it('should generate keys', async () => {
+        let key: Key = Key.generate();
     });
 });

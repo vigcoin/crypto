@@ -9,6 +9,7 @@ export const enc = sh.enc;
 export const dec = sh.dec;
 export const verify = sh.verify;
 export const to_address = sh.to_address;
+export const generate_key_pair = sh.generate_key_pair;
 
 export interface KeyPair {
   public: Uint8Array;
@@ -23,6 +24,16 @@ export class Key {
   }
   verify(secretKey: Uint8Array, publicKey: Uint8Array) {
     return verify(secretKey, publicKey);
+  }
+
+  get(): KeyPair {
+    return this.keyPair;
+  }
+
+  static generate():Key {
+    const key: KeyPair = generate_key_pair();
+    console.log(key);
+    return new Key(key);
   }
 }
 

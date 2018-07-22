@@ -3,6 +3,7 @@
 #include <string>
 #include "wallet/wallet.h"
 #include "cryptonote/common/base58.h"
+// #include "cryptonote/crypto/crypto.h"
 
 using namespace Napi;
 
@@ -108,21 +109,26 @@ Napi::Value decrypt(const Napi::CallbackInfo &info)
   return Napi::Buffer<uint8_t>::New(env, des, length);
 }
 
-Napi::Value echo(const Napi::CallbackInfo &info)
+Napi::Value generate_key_pair(const Napi::CallbackInfo &info)
 {
   Napi::Env env = info.Env();
-  if (info.Length() < 1)
-  {
-    Napi::TypeError::New(env, "Wrong number of arguments").ThrowAsJavaScriptException();
-    return env.Null();
-  }
+  SecretKey secret;
+  PublicKey pub;
+  Crypto::generate_keys(pub, secret);
+  Buffer<uint8_t> publicKey = Buffer<uint8_t>::New(env, sizeof(PublicKey));
+  Buffer<uint8_t> secretKey = Buffer<uint8_t>::New(env, sizeof(SecretKey));
+  const uint8_t *pSecretKey = secretKey.Data();
+  const uint8_t *pPublicKey = publicKey.Data();
+  memcpy((void *)pSecretKey, &secret, sizeof(SecretKey));
+  memcpy((void *)pPublicKey, &pub, sizeof(PublicKey));
+  bool res = Wallet::verify_key((SecretKey &)*pSecretKey, (PublicKey &)*pPublicKey);
+  assert(res);
+  cout << "res is " << res << endl;
 
-  if (!info[0].IsString())
-  {
-    Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
-    return env.Null();
-  }
-  return Napi::String::New(env, info[0].As<Napi::String>().Utf8Value());
+  Object obj = Object::New(env);
+  obj.Set("public", publicKey);
+  obj.Set("private", secretKey);
+  return obj;
 }
 
 Napi::Value verify(const Napi::CallbackInfo &info)
@@ -228,8 +234,8 @@ Napi::Value to_address(const Napi::CallbackInfo &info)
 
 Napi::Object Init(Napi::Env env, Napi::Object exports)
 {
-  exports.Set(Napi::String::New(env, "echo"),
-              Napi::Function::New(env, echo));
+  exports.Set(Napi::String::New(env, "generate_key_pair"),
+              Napi::Function::New(env, generate_key_pair));
 
   exports.Set(Napi::String::New(env, "enc"),
               Napi::Function::New(env, enc));

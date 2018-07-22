@@ -16,6 +16,7 @@
             "src/cryptonote/crypto/context.cpp",
             "src/cryptonote/crypto/crypto.cpp",
             "src/cryptonote/crypto/crypto-ops.c",
+            "src/cryptonote/crypto/random.c",
             "src/cryptonote/crypto/crypto-ops-data.c",
             "src/cryptonote/common/base58.cpp",
             "src/wallet/wallet.cc"
