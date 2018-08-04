@@ -30,7 +30,11 @@ export class Key {
     return this.keyPair;
   }
 
-  static generate():Key {
+  static toHex(key: Uint8Array) {
+    return Buffer.from(key).toString('hex');
+  }
+
+  static generate(): Key {
     const key: KeyPair = generate_key_pair();
     console.log(key);
     return new Key(key);
@@ -146,12 +150,18 @@ export class Wallet {
     this.password = password;
   }
 
+  static create() {
+
+  }
+
   async read() {
     const read = await this.reader.read(this.filename, this.password);
     const {
       iv,
       cipher
     } = read;
+    // assert(iv);
+    // assert(cipher);
     const plain = dec(iv, this.password, cipher);
     this._address = new Address(plain, this.prefix);
     this.address = this._address.address;
@@ -159,5 +169,12 @@ export class Wallet {
 
   getAddress(): string {
     return this.address;
+  }
+
+  getSecretKeys() {
+    return {
+      send: Key.toHex(this._address.sendKeys.keyPair.private),
+      view: Key.toHex(this._address.viewKeys.keyPair.private)
+    }
   }
 }

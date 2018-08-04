@@ -15,6 +15,7 @@
             "src/cryptonote/crypto/slow-hash.c",
             "src/cryptonote/crypto/context.cpp",
             "src/cryptonote/crypto/crypto.cpp",
+            "src/cryptonote/crypto/skein.c",
             "src/cryptonote/crypto/crypto-ops.c",
             "src/cryptonote/crypto/random.c",
             "src/cryptonote/crypto/crypto-ops-data.c",
