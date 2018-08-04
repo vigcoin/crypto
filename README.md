@@ -1,8 +1,8 @@
 @vig/crypto
 =====================
 
-[![](https://travis-ci.org/vigcoin/crypto.svg?branch=master)](https://travis-ci.org/vigcoin/crypto)
-
+[![](https://travis-ci.org/vigcoin/crypto.svg?branch=master)](https://travis-ci.org/vigcoin/crypto) 
+[![Coverage Status](https://coveralls.io/repos/github/vigcoin/crypto/badge.svg?branch=master)](https://coveralls.io/github/vigcoin/crypto?branch=master)
 
 basic cryptonote functions.
 will include apis for:
