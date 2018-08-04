@@ -1,6 +1,6 @@
 {
     "name": "@vigcoin/crypto",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "lincense": "GPL",
     "author": {
         "name": "calidion",
@@ -16,7 +16,7 @@
     "scripts": {
         "pretest": "./node_modules/typescript/bin/tsc --pretty",
         "prebuild": "npm run clean && npm run format && npm run lint && echo Using TypeScript && tsc --version",
-        "test": "jest"
+        "test": "jest --coverage"
     },
     "repository": {
         "type": "git",

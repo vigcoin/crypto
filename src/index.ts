@@ -36,7 +36,6 @@ export class Key {
 
   static generate(): Key {
     const key: KeyPair = generate_key_pair();
-    console.log(key);
     return new Key(key);
   }
 }
@@ -112,10 +111,8 @@ export class Address {
     const viewPrivate = this.parseAddress(this.data, offset);
 
     this.viewKeys = new Key({ public: viewPublic.value, private: viewPrivate.value });
-    if (this.base58Prefix) {
-      let key = Buffer.concat([spendPublic.value, viewPublic.value]);
-      this.address = this.getAddress(this.base58Prefix, key);
-    }
+    let key = Buffer.concat([spendPublic.value, viewPublic.value]);
+    this.address = this.getAddress(this.base58Prefix, key);
   }
 
   public getAddress(base58Prefix?: number, key?: Buffer) {
