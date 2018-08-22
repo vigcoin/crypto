@@ -3,7 +3,6 @@
 #include <string>
 #include "wallet/wallet.h"
 #include "cryptonote/common/base58.h"
-// #include "cryptonote/crypto/crypto.h"
 
 using namespace Napi;
 
@@ -232,6 +231,53 @@ Napi::Value to_address(const Napi::CallbackInfo &info)
   return Napi::String::New(env, addressStr);
 }
 
+// Wallet API
+
+Napi::Value wallet_save(const Napi::CallbackInfo &info)
+{
+  const Napi::Env env = info.Env();
+
+  if (info.Length() != 4)
+  {
+    Napi::TypeError::New(env, "Wrong number of arguments").ThrowAsJavaScriptException();
+    return env.Null();
+  }
+
+  if (!info[0].IsString())
+  {
+    Napi::TypeError::New(env, "Wrong filename type: String required!").ThrowAsJavaScriptException();
+    return env.Null();
+  }
+
+  std::string filename = info[0].As<String>();
+  if (!info[1].IsString())
+  {
+    Napi::TypeError::New(env, "Wrong password type: String required!").ThrowAsJavaScriptException();
+    return env.Null();
+  }
+
+  std::string password = info[1].As<String>();
+  if (!info[2].IsString())
+  {
+    Napi::TypeError::New(env, "Wrong spend key type: String required!").ThrowAsJavaScriptException();
+    return env.Null();
+  }
+
+  std::string spendKey = info[2].As<String>();
+
+  if (!info[3].IsString())
+  {
+    Napi::TypeError::New(env, "Wrong view key type: String required!").ThrowAsJavaScriptException();
+    return env.Null();
+  }
+
+  std::string viewKey = info[3].As<String>();
+
+  bool isOk = Wallet::create(filename, password, spendKey, viewKey);
+
+  return Napi::Boolean::New(env, isOk);
+}
+
 Napi::Object Init(Napi::Env env, Napi::Object exports)
 {
   exports.Set(Napi::String::New(env, "generate_key_pair"),
@@ -247,7 +293,8 @@ Napi::Object Init(Napi::Env env, Napi::Object exports)
               Napi::Function::New(env, verify));
   exports.Set(Napi::String::New(env, "to_address"),
               Napi::Function::New(env, to_address));
-
+  exports.Set(Napi::String::New(env, "wallet_save"),
+              Napi::Function::New(env, wallet_save));
   return exports;
 }
 

@@ -19,14 +19,21 @@
             "src/cryptonote/crypto/crypto-ops.c",
             "src/cryptonote/crypto/random.c",
             "src/cryptonote/crypto/crypto-ops-data.c",
+            "src/cryptonote/serialization/BinaryOutputStreamSerializer.cpp",
+            "src/cryptonote/core/CryptoNoteSerialization.cpp",
             "src/cryptonote/common/base58.cpp",
+            "src/cryptonote/common/StringTools.cpp",
+            "src/cryptonote/common/StreamTools.cpp",
+            "src/cryptonote/common/StringView.cpp",
+            "src/cryptonote/common/StdOutputStream.cpp",
+            "src/cryptonote/wallet/KeysStorage.cpp",
             "src/wallet/wallet.cc"
 
         ],
-        "include_dirs": [".", "<!@(node -p \"require('node-addon-api').include\")"],
+        "include_dirs": [".", "./cryptonote", "<!@(node -p \"require('node-addon-api').include\")"],
         "dependencies": ["<!(node -p \"require('node-addon-api').gyp\")"],
 
-        "cflags_cc!": ["-fno-exceptions"],
+        "cflags_cc!": ["-fno-exceptions", "-fno-rtti"],
         "cflags": [
             "-msse2",
             "-maes"

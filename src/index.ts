@@ -1,8 +1,10 @@
 const sh = require('bindings')('crypto.node')
 const assert = require("assert");
+
+export * from "./reader";
+export * from "./keys";
 import { Reader } from "./reader";
-import { FILE } from "dns";
-export { Reader } from "./reader";
+import { KeyPair, Key } from "./keys";
 
 export const echo = sh.echo;
 export const enc = sh.enc;
@@ -10,42 +12,16 @@ export const dec = sh.dec;
 export const verify = sh.verify;
 export const to_address = sh.to_address;
 export const generate_key_pair = sh.generate_key_pair;
+export const wallet_save = sh.wallet_save;
 
-export interface KeyPair {
-  public: Uint8Array;
-  private: Uint8Array;
-};
 
-export class Key {
-  keyPair: KeyPair;
-  constructor(keyPair: KeyPair) {
-    this.keyPair = keyPair;
-    assert(this.verify(this.keyPair.private, this.keyPair.public));
-  }
-  verify(secretKey: Uint8Array, publicKey: Uint8Array) {
-    return verify(secretKey, publicKey);
-  }
-
-  get(): KeyPair {
-    return this.keyPair;
-  }
-
-  static toHex(key: Uint8Array) {
-    return Buffer.from(key).toString('hex');
-  }
-
-  static generate(): Key {
-    const key: KeyPair = generate_key_pair();
-    return new Key(key);
-  }
-}
 
 export class Address {
   data: Buffer;
 
   createdTime: number;
 
-  sendKeys: Key;
+  spendKeys: Key;
   viewKeys: Key;
 
   base58Prefix: number;
@@ -77,12 +53,12 @@ export class Address {
   }
 
   parseCreateTime(offset: number) {
-    const vint = this.getVarInt(this.data, 0);
+    const vint = this.getVarInt(this.data, offset);
     this.createdTime = vint.value;
     return vint;
   }
 
-  parseAddress(buffer: Buffer, offset: number) {
+  parseKey(buffer: Buffer, offset: number) {
     const size = 32;
     const address = new Buffer(32);
     buffer.copy(address, 0, offset, offset + size);
@@ -96,19 +72,19 @@ export class Address {
     let offset = 0;
     const time = this.parseCreateTime(0);
     offset += time.bytes;
-    const spendPublic = this.parseAddress(this.data, time.bytes);
+    const spendPublic = this.parseKey(this.data, time.bytes);
 
     offset += spendPublic.bytes;
-    const spendPrivate = this.parseAddress(this.data, time.bytes + spendPublic.bytes);
+    const spendPrivate = this.parseKey(this.data, time.bytes + spendPublic.bytes);
 
-    this.sendKeys = new Key({ public: spendPublic.value, private: spendPrivate.value });
+    this.spendKeys = new Key({ public: spendPublic.value, private: spendPrivate.value });
 
     offset += spendPrivate.bytes;
-    const viewPublic = this.parseAddress(this.data, offset);
+    const viewPublic = this.parseKey(this.data, offset);
 
 
     offset += viewPublic.bytes;
-    const viewPrivate = this.parseAddress(this.data, offset);
+    const viewPrivate = this.parseKey(this.data, offset);
 
     this.viewKeys = new Key({ public: viewPublic.value, private: viewPrivate.value });
     let key = Buffer.concat([spendPublic.value, viewPublic.value]);
@@ -147,8 +123,8 @@ export class Wallet {
     this.password = password;
   }
 
-  static create() {
-
+  static save(filename: string, password: string, spendkey: string, viewKey: string) {
+    return wallet_save(filename, password, spendkey, viewKey);
   }
 
   async read() {
@@ -170,7 +146,7 @@ export class Wallet {
 
   getSecretKeys() {
     return {
-      send: Key.toHex(this._address.sendKeys.keyPair.private),
+      spend: Key.toHex(this._address.spendKeys.keyPair.private),
       view: Key.toHex(this._address.viewKeys.keyPair.private)
     }
   }

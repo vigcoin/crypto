@@ -15,6 +15,8 @@ const {
     Wallet
 } = require('../');
 
+let saveKeys;
+
 describe('crypto', () => {
     it('should dec', () => {
         let iv = new Buffer(8);
@@ -103,15 +105,35 @@ describe('crypto', () => {
             assert(wallet.getAddress() === "BGXjsWEJGoEW9hQm4rWyzvefLKEsr72RaJqjpryicRRfiuUQkpadGzBb3UtsinaDQTd48LPCQtgQf2pegsz8W3r46Y8fN9e");
             const keys = wallet.getSecretKeys();
             console.log(keys);
-            assert(keys.send);
+            assert(keys.spend);
             assert(keys.view);
+
+            saveKeys = keys;
+
         } catch (e) {
             catched = true;
         }
         assert(!catched);
     });
 
+    it('should save Wallet', () => {
+        const filename = path.resolve(__dirname, '../wallet/out/' + new Date().getTime() + '.wallet');
+        try {
+            Wallet.save(filename, '1234', saveKeys.spend, saveKeys.view);
+        } catch (e) {
+            console.log(e);
+        }
+
+    });
+
     it('should generate keys', async () => {
+        let key: Key = Key.generate();
+        let pair: KeyPair = key.get();
+        assert(pair.public);
+        assert(pair.private);
+    });
+
+    it('should save keys to file', async () => {
         let key: Key = Key.generate();
         let pair: KeyPair = key.get();
         assert(pair.public);
