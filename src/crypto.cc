@@ -46,7 +46,7 @@ Napi::Value checkParam(const Napi::Env env, const Napi::CallbackInfo &info)
   return Napi::Boolean::New(env, true);
 }
 
-Napi::Value enc(const Napi::CallbackInfo &info)
+Napi::Value wallet_encrypt(const Napi::CallbackInfo &info)
 {
   const Napi::Env env = info.Env();
   if (checkParam(env, info) == env.Null())
@@ -68,7 +68,7 @@ Napi::Value enc(const Napi::CallbackInfo &info)
   return Napi::String::New(env, cipher);
 }
 
-Napi::Value decrypt(const Napi::CallbackInfo &info)
+Napi::Value wallet_decrypt(const Napi::CallbackInfo &info)
 {
   const Napi::Env env = info.Env();
   if (checkParam(env, info) == env.Null())
@@ -238,10 +238,10 @@ Napi::Object Init(Napi::Env env, Napi::Object exports)
               Napi::Function::New(env, generate_key_pair));
 
   exports.Set(Napi::String::New(env, "enc"),
-              Napi::Function::New(env, enc));
+              Napi::Function::New(env, wallet_encrypt));
 
   exports.Set(Napi::String::New(env, "dec"),
-              Napi::Function::New(env, decrypt));
+              Napi::Function::New(env, wallet_decrypt));
 
   exports.Set(Napi::String::New(env, "verify"),
               Napi::Function::New(env, verify));
