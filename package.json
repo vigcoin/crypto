@@ -1,6 +1,6 @@
 {
   "name": "@vigcoin/crypto",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "crypto",
   "license": "MIT",
   "repository": "",
@@ -30,7 +30,7 @@
     "watch:test": "jest --watch"
   },
   "dependencies": {
-    "@vigcoin/neon": "^0.2.9"
+    "@vigcoin/neon": "^0.2.10"
   },
   "devDependencies": {
     "@types/jest": "^23.3.3",
