@@ -1,53 +1,54 @@
 {
-    "name": "@vigcoin/crypto",
-    "version": "0.5.1",
-    "lincense": "GPL",
-    "author": {
-        "name": "calidion",
-        "email": "calidion@gmail.com"
-    },
-    "files": [
-        "binding.gyp",
-        "lib",
-        "src"
-    ],
-    "main": "lib/index.js",
-    "typings": "lib/index.d.ts",
-    "scripts": {
-        "pretest": "./node_modules/typescript/bin/tsc --pretty",
-        "prebuild": "npm run clean && npm run format && npm run lint && echo Using TypeScript && tsc --version",
-        "test": "jest --coverage"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/vigcoin/crypto.git"
-    },
-    "dependencies": {
-        "bindings": "*",
-        "node-addon-api": "^1.3.0",
-        "node-gyp": "^3.7.0"
-    },
-    "keywords": [
-        "crypto",
-        "hash"
-    ],
-    "devDependencies": {
-        "@types/jest": "23.1.6",
-        "@types/node": "10.1.0",
-        "jest": "23.4.1",
-        "mocha": "5.1.0",
-        "ts-jest": "23.0.0",
-        "typescript": "2.9.2"
-    },
-    "jest": {
-        "transform": {
-            ".(ts)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
-        },
-        "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|js)$",
-        "moduleFileExtensions": [
-            "ts",
-            "js"
-        ],
-        "testEnvironment": "node"
-    }
+  "name": "@vigcoin/crypto",
+  "version": "0.6.0",
+  "description": "crypto",
+  "license": "MIT",
+  "repository": "",
+  "author": {
+    "name": "",
+    "email": "",
+    "url": ""
+  },
+  "keywords": [
+    ""
+  ],
+  "files": [
+    "lib"
+  ],
+  "main": "lib/index",
+  "types": "lib/index",
+  "scripts": {
+    "clean": "rimraf lib && rimraf coverage",
+    "format": "prettier --write \"{src,__tests__}/**/*.ts\" --trailing-comma es5",
+    "lint": "tslint --force --format verbose \"src/**/*.ts\"",
+    "prepublishOnly": "npm run build",
+    "prebuild": "npm run clean && npm run format && npm run lint && echo Using TypeScript && tsc --version",
+    "build": "tsc --pretty",
+    "test": "jest --coverage",
+    "coverage": "jest --coverage",
+    "watch": "npm run build -- --watch",
+    "watch:test": "jest --watch"
+  },
+  "dependencies": {
+    "@vigcoin/neon": "^0.2.5"
+  },
+  "devDependencies": {
+    "@types/jest": "^23.3.3",
+    "@types/node": "^10.11.4",
+    "coveralls": "^3.0.2",
+    "jest": "^23.6.0",
+    "prettier": "^1.14.3",
+    "rimraf": "^2.6.2",
+    "ts-jest": "^23.10.3",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.11.0",
+    "tslint-config-prettier": "^1.15.0",
+    "typescript": "^3.1.1"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "jest": {
+    "preset": "ts-jest"
+  }
 }
