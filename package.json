@@ -30,7 +30,7 @@
     "watch:test": "jest --watch"
   },
   "dependencies": {
-    "@vigcoin/neon": "^0.2.5"
+    "@vigcoin/neon": "^0.2.9"
   },
   "devDependencies": {
     "@types/jest": "^23.3.3",
