@@ -28,10 +28,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.17.9.tgz#4f251a1ed77ac7ef09d456247d67fc8173f6b9da"
   integrity sha512-+6VygF9LbG7Gaqeog2G7u1+RUcmo0q1rI+2ZxdIg2fAUngk5Vz9fOCHXdloNUOHEPd1EuuOpL5O0CdgN9Fx5UQ==
 
-"@vigcoin/neon@^0.2.11":
-  version "0.2.11"
-  resolved "https://registry.yarnpkg.com/@vigcoin/neon/-/neon-0.2.11.tgz#82ea8e9fbc1938a2501efa1514ec2340614a6e61"
-  integrity sha512-Bk453h7a3GkjGh8wsMrVF0Mi9tbPPLPlbBzDSQZIpcE2fr7IbXGsjlwAtryZZts0d111N79+9IQrF91EbjKnvQ==
+"@vigcoin/neon@^0.2.12":
+  version "0.2.12"
+  resolved "https://registry.yarnpkg.com/@vigcoin/neon/-/neon-0.2.12.tgz#9243bdf091727584fab7c7b0c681bcb8bc871c0d"
+  integrity sha512-hBzXHC65Z/ALc0GqQbGZjCjydProDkSyqSlhdd6OwmcjuAETinrWlUexhqB0RwUhLpRl2MCQXHrM+ololhiqfg==
   dependencies:
     neon-cli "^0.2.0"
 
